@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "976554862925",
+    "project_id": "testvideolist-ed4f8",
+    "storage_bucket": "testvideolist-ed4f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976554862925:android:900d702f2fb514f14e6f04",
+        "android_client_info": {
+          "package_name": "com.testvideolist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATxisJn4fKy9bztDeaFeQCe34HTk2ZbfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
