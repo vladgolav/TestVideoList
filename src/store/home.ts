@@ -3,7 +3,7 @@ import remoteConfig from '@react-native-firebase/remote-config';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
 
-import { IHomeStore, ISection, VideosType } from 'src/interfaces/store/homeStore.interface';
+import { IHomeStore, ISection, VideosType, ISectionParameter, SectionsType } from 'src/interfaces/store/homeStore.interface';
 import zustandStorage from 'src/utils/zustandPersistMmkv';
 import { getVideoList } from 'src/utils/getVideoList';
 
@@ -23,20 +23,19 @@ const useHomeStore = create<IHomeStore>()(persist((set) => ({
         const parameters = remoteConfig().getAll();
         const videos = JSON.parse(parameters.videos?.asString() || '[]') as VideosType;
         const videoListParameter = JSON.parse(parameters.videoList?.asString() || '[]') as number[];
-        const sectionsParameter = JSON.parse(parameters.sections?.asString() || '{}');
+        const sectionsParameter = JSON.parse(parameters.sections?.asString() || '{}') as ISectionParameter;
 
         const videoList = getVideoList(videoListParameter, videos);
 
-        const sections = sectionsParameter.orders?.reduce((acc: ISection, item: string) => {
-          if (sectionsParameter?.sections[item]) {
-            acc = {
-              ...acc,
-              [item]: {
-                ...sectionsParameter?.sections?.[item],
-                videos: getVideoList(sectionsParameter?.sections?.[item]?.videos, videos),
-              }
-            }
+        const sections = sectionsParameter.order?.reduce((acc: SectionsType, item: string) => {
+          if (sectionsParameter?.sectionList[item]) {
+            acc = acc.concat({
+              ...sectionsParameter?.sectionList[item],
+              videos: getVideoList(sectionsParameter?.sectionList?.[item]?.videos, videos),
+            });
           }
+
+          return acc;
         }, [])
 
         set(() => ({

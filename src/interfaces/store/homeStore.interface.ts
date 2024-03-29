@@ -10,12 +10,14 @@ export interface IVideo {
   commingSoon: Date | null;
   type: string;
   subTitle: string | null;
+  poster: string;
   episodes: Array<IEpisode>;
 };
 
 export type VideosType = Array<IVideo>;
 
 export interface ISection {
+  id: number;
   title: string;
   videos: VideosType;
 };
@@ -28,4 +30,15 @@ export interface IHomeStore {
   videos: VideosType;
   loading: boolean;
   fetchInfo: () => Promise<void>;
+};
+
+export type SectionListType = ISection & {
+  videos: number[];
+};
+
+export interface ISectionParameter {
+  order: string[],
+  sectionList: {
+    [key: string]: SectionListType
+  }
 };
