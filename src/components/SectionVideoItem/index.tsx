@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text, View, Platform } from "react-native";
 import FastImage from 'react-native-fast-image';
 import dayjs from 'dayjs';
 
@@ -32,6 +32,12 @@ const SectionVideoItem: React.FC<ISectionVideoItem> = ({ video }) => {
     return null;
   }, []);
 
+  const BlurRadius = useMemo(() => {
+    if (!video.commingSoon) return 0;
+
+    return Platform.OS === 'ios' ? 50 : 20;
+  }, []);
+
   const CommintSoonComponent = useMemo(() => {
     if (video.commingSoon) {
       const commingSoonText = (dayjs(video.commingSoon).format('MMMM D')).toUpperCase();
@@ -46,9 +52,9 @@ const SectionVideoItem: React.FC<ISectionVideoItem> = ({ video }) => {
       <TouchableOpacity disabled={!!video.commingSoon} style={styles.container}>
         <FastImage
           source={{ uri: video.poster }}
-          resizeMode='cover'
+          resizeMode='stretch'
           style={styles.poster}
-          blurRadius={video.commingSoon ? 50 : 0}
+          blurRadius={BlurRadius}
         />
         {BlurViewComponent}
         {CommintSoonComponent}
