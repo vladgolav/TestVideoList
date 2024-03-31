@@ -5,6 +5,7 @@ import styles from './styles';
 
 import CloseIcon from 'src/assets/images/CloseIcon.png'
 import { navigationRef } from 'src/navigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const CloseButton = () => {
   const goBack = () => {
@@ -12,12 +13,14 @@ const CloseButton = () => {
   };
   
   return (
-    <TouchableOpacity style={styles.container} onPress={goBack}>
-      <Image
-        source={CloseIcon}
-        style={styles.icon}
-      />
-    </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity hitSlop={15} onPress={goBack}>
+        <Image
+          source={CloseIcon}
+          style={styles.icon}
+        />
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 };
 

@@ -6,9 +6,9 @@ import { colors } from "src/constants/colors";
 export default StyleSheet.create({
   container: {
     position: 'absolute',
+    zIndex: 999,
     top: moderateScale(12),
     left: moderateScale(16),
-    zIndex: 999,
   },
   icon: {
     width: moderateScale(30),
