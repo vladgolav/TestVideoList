@@ -6,6 +6,8 @@ import { ViewabilityConfigCallbackPairs } from 'react-native';
 const viewabilityConfig = { viewAreaCoveragePercentThreshold: 50 };
 
 const Episodes = () => {
+  const [height, setHeight] = useState(0);
+
   const { episodes } = useCurrentVideoStore((state) => ({
     episodes: state.currentVideo?.episodes || [],
   }));
@@ -25,6 +27,8 @@ const Episodes = () => {
       episodes={episodes}
       viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs}
       currentViewableItemIndex={currentViewableItemIndex}
+      setHeight={setHeight}
+      height={height}
     />
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Image } from 'react-native';
+import { TouchableOpacity, Image, View } from 'react-native';
 
 import styles from './styles';
 
@@ -13,14 +13,14 @@ const CloseButton = () => {
   };
   
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <TouchableOpacity hitSlop={15} onPress={goBack}>
         <Image
           source={CloseIcon}
           style={styles.icon}
         />
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 

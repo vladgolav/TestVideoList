@@ -7,7 +7,7 @@ export default StyleSheet.create({
   container: {
     position: 'absolute',
     zIndex: 999,
-    top: moderateScale(12),
+    top: moderateScale(16),
     left: moderateScale(16),
   },
   icon: {

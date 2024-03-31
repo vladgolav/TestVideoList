@@ -8,4 +8,6 @@ export const colors = {
   whiteEB: '#EBEDF0',
   blue: '#00BFE5',
   whiteOpacity: 'rgba(255, 255, 255, 0.3)',
+  linearGradientBlack09: 'rgba(0, 0, 0, 0.9)',
+  linearGradientTransparent: 'transparent',
 };

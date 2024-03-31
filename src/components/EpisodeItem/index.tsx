@@ -1,23 +1,44 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, Dimensions } from 'react-native';
+import Video from 'react-native-video';
 
 import { IEpisode } from 'src/interfaces/store/homeStore.interface';
 import styles from './styles';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface IEpisodeItem {
   episode: IEpisode;
   shouldPlay: boolean;
+  height: number;
 };
 
-const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay }) => {
+const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) => {
+
+  useEffect(() => {
+    // if (!videoRef.current) return;
+
+    // if (shouldPlay) {
+    //   videoRef.current.play?.();
+    // } else {
+    //   videoRef.current?.pause?.()
+    // }
+  }, [shouldPlay])
+
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.titleContainer}>
-        <View>
-          <Text style={styles.nameText}>{episode.name}</Text>
-        </View>
-      </SafeAreaView>
+    <View style={[styles.container, { height }]}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.nameText}>{episode.name}</Text>
+      </View>
+      <Video 
+        source={{ uri: episode.url }}
+        style={{ height, width: '100%' }}
+        ignoreSilentSwitch={'ignore'}
+        repeat={true}
+        paused={!shouldPlay}
+        controls={false}
+        playInBackground={false}
+        playWhenInactive={false}
+        resizeMode={'cover'}
+      />
     </View>
   );
 };

@@ -7,25 +7,30 @@ import CloseButton from 'src/components/CloseButton';
 import ShadowContainer from 'src/components/ShadowContainer';
 
 import styles from './styles';
+import { colors } from 'src/constants/colors';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface IEpisodesScreen {
   episodes: IEpisode[];
   currentViewableItemIndex: number;
   viewabilityConfigCallbackPairs: RefObject<ViewabilityConfigCallbackPairs>
+  setHeight: (value: number) => void;
+  height: number;
 };
 
-const EpisodesScreen: React.FC<IEpisodesScreen> = ({ episodes, viewabilityConfigCallbackPairs, currentViewableItemIndex }) => {
+const EpisodesScreen: React.FC<IEpisodesScreen> = ({ episodes, viewabilityConfigCallbackPairs, currentViewableItemIndex, setHeight, height }) => {
   const renderItem = ({ item, index } : { item: IEpisode, index: number }) => {
     return (
       <EpisodeItem
         episode={item}
         shouldPlay={index === currentViewableItemIndex}
+        height={height}
       />
     );
   };
 
   return (
-    <ShadowContainer>
+    <ShadowContainer setHeight={setHeight}>
       <View style={styles.container}>
         <CloseButton />
         <FlatList

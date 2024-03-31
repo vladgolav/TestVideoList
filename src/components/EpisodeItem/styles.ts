@@ -6,16 +6,17 @@ const { width, height } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: 'red',
-    height,
+    backgroundColor: colors.black,
+    height: 837,
     width,
+    zIndex: 99,
   },
   titleContainer: {
-    zIndex: 99,
-    top: moderateScale(12),
+    position: 'absolute',
+    zIndex: 999,
+    top: moderateScale(20),
   },
   nameText: {
-    position: 'absolute',
     textAlign: 'center',
     width,
     color: colors.whiteF5,
