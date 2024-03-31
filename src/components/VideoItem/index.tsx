@@ -4,14 +4,23 @@ import FastImage from 'react-native-fast-image';
 
 import { IVideo } from 'src/interfaces/store/homeStore.interface';
 import styles from './styles';
+import useCurrentVideoStore from 'src/store/currentVideo';
 
 interface IVideoItem {
   video: IVideo;
 };
 
 const VideoItem: React.FC<IVideoItem> = ({ video }) => {
+  const { setCurrentVideo } = useCurrentVideoStore((state) => ({
+    setCurrentVideo: state.setCurrentVideo,
+  }));
+
+  const onVideoPress = () => {
+    setCurrentVideo(video)
+  }
+
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onVideoPress}>
       <FastImage
         source={{ uri: video.poster }}
         resizeMode='cover'
@@ -23,8 +32,8 @@ const VideoItem: React.FC<IVideoItem> = ({ video }) => {
           </Text>
         </View>
         <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>{video.title}</Text>
-          <Text style={styles.subTitleText}>{video.subTitle}</Text>
+          <Text style={[styles.titleText, styles.textShadow]}>{video.title}</Text>
+          <Text style={[styles.subTitleText, styles.textShadow]}>{video.subTitle}</Text>
         </View>
       </FastImage>
     </TouchableOpacity>

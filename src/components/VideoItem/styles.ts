@@ -42,4 +42,9 @@ export default StyleSheet.create({
     lineHeight: moderateScale(16),
     marginTop: moderateScale(8),
   },
+  textShadow: {
+    textShadowColor: 'rgba(0, 0, 0, 0.8)', 
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 20,
+  },
 });

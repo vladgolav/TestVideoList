@@ -9,12 +9,17 @@ import { IVideo } from "src/interfaces/store/homeStore.interface";
 
 import BlurView from '../BlurView';
 import styles from './styles';
+import useCurrentVideoStore from 'src/store/currentVideo';
 
 interface ISectionVideoItem {
   video: IVideo;
 };
 
 const SectionVideoItem: React.FC<ISectionVideoItem> = ({ video }) => {
+  const { setCurrentVideo } = useCurrentVideoStore((state) => ({
+    setCurrentVideo: state.setCurrentVideo,
+  }));
+
   const BlurViewComponent = useMemo(() => {
     if (video.commingSoon) {
       return (
@@ -47,9 +52,13 @@ const SectionVideoItem: React.FC<ISectionVideoItem> = ({ video }) => {
     return null;
   }, []);
 
+  const onVideoPress = () => {
+    setCurrentVideo(video);
+  };
+
   return (
     <>
-      <TouchableOpacity disabled={!!video.commingSoon} style={styles.container}>
+      <TouchableOpacity disabled={!!video.commingSoon} style={styles.container} onPress={onVideoPress}>
         <FastImage
           source={{ uri: video.poster }}
           resizeMode='stretch'

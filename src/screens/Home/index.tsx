@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 
-import { IHomeStore } from 'src/interfaces/store/homeStore.interface';
-
 import HomeScreen from './Home';
 import useHomeStore from 'src/store/home';
 
 const Home = () => {
-  const { fetchInfo, loading, sections, videoList } = useHomeStore((state: IHomeStore) => ({
+  const { fetchInfo, loading, sections, videoList } = useHomeStore((state) => ({
     fetchInfo: state.fetchInfo,
     loading: state.loading,
     sections: state.sections,
