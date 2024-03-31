@@ -28,6 +28,8 @@ const SectionItem: React.FC<ISectionItem> = ({ section }) => {
         data={section.videos}
         renderItem={renderSectionVideoItem}
         keyExtractor={(item) => `${item.id}`}
+        showsHorizontalScrollIndicator={false}
+        style={styles.flatlist}
         horizontal
       />
     </>

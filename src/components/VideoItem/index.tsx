@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 import { IVideo } from 'src/interfaces/store/homeStore.interface';
@@ -11,21 +11,23 @@ interface IVideoItem {
 
 const VideoItem: React.FC<IVideoItem> = ({ video }) => {
   return (
-    <FastImage
-      source={{ uri: video.poster }}
-      resizeMode='cover'
-      style={styles.container}
-    >
-      <View style={styles.videoTypeContainer}>
-        <Text style={styles.videoTypeText}>
-          {video.type}
-        </Text>
-      </View>
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>{video.title}</Text>
-        <Text style={styles.subTitleText}>{video.subTitle}</Text>
-      </View>
-    </FastImage>
+    <TouchableOpacity>
+      <FastImage
+        source={{ uri: video.poster }}
+        resizeMode='cover'
+        style={styles.container}
+      >
+        <View style={styles.videoTypeContainer}>
+          <Text style={styles.videoTypeText}>
+            {video.type}
+          </Text>
+        </View>
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>{video.title}</Text>
+          <Text style={styles.subTitleText}>{video.subTitle}</Text>
+        </View>
+      </FastImage>
+    </TouchableOpacity>
   );
 }
 

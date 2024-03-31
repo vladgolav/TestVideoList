@@ -6,4 +6,6 @@ export const colors = {
   whiteF2: '#F2F3F5',
   whiteC4: '#C4C8CC',
   whiteEB: '#EBEDF0',
+  blue: '#00BFE5',
+  whiteOpacity: 'rgba(255, 255, 255, 0.3)',
 };

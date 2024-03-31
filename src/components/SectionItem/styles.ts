@@ -19,4 +19,7 @@ export default StyleSheet.create({
   spaceFlatList: {
     width: moderateScale(16),
   },
+  flatlist: {
+    backgroundColor: colors.blackBackground,
+  },
 });

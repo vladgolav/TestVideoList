@@ -1,0 +1,292 @@
+diff --git a/node_modules/react-native-fast-image/android/build.gradle b/node_modules/react-native-fast-image/android/build.gradle
+index 5b21cd5..54949dd 100644
+--- a/node_modules/react-native-fast-image/android/build.gradle
++++ b/node_modules/react-native-fast-image/android/build.gradle
+@@ -65,4 +65,6 @@ dependencies {
+     implementation "com.github.bumptech.glide:glide:${glideVersion}"
+     implementation "com.github.bumptech.glide:okhttp3-integration:${glideVersion}"
+     annotationProcessor "com.github.bumptech.glide:compiler:${glideVersion}"
++
++    implementation 'jp.wasabeef:glide-transformations:4.3.0'
+ }
+diff --git a/node_modules/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewConverter.java b/node_modules/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewConverter.java
+index 86ca00d..329f6ab 100644
+--- a/node_modules/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewConverter.java
++++ b/node_modules/react-native-fast-image/android/src/main/java/com/dylanvann/fastimage/FastImageViewConverter.java
+@@ -25,8 +25,11 @@ import java.util.Map;
+ 
+ import javax.annotation.Nullable;
+ 
++import jp.wasabeef.glide.transformations.BlurTransformation;
++
+ class FastImageViewConverter {
+     private static final Drawable TRANSPARENT_DRAWABLE = new ColorDrawable(Color.TRANSPARENT);
++    private static final int BLUR_SAMPLING = 3;
+ 
+     private static final Map<String, FastImageCacheControl> FAST_IMAGE_CACHE_CONTROL_MAP =
+             new HashMap<String, FastImageCacheControl>() {{
+@@ -101,6 +104,9 @@ class FastImageViewConverter {
+                 break;
+         }
+ 
++        // Get blur.
++        final int blurRadius = (int)FastImageViewConverter.getBlurRadius(source);
++
+         RequestOptions options = new RequestOptions()
+                 .diskCacheStrategy(diskCacheStrategy)
+                 .onlyRetrieveFromCache(onlyFromCache)
+@@ -108,6 +114,10 @@ class FastImageViewConverter {
+                 .priority(priority)
+                 .placeholder(TRANSPARENT_DRAWABLE);
+ 
++        if (blurRadius > 0) {
++            options = options.transform(new BlurTransformation((int)blurRadius, BLUR_SAMPLING));
++        }
++
+         if (imageSource.isResource()) {
+             // Every local resource (drawable) in Android has its own unique numeric id, which are
+             // generated at build time. Although these ids are unique, they are not guaranteed unique
+@@ -121,6 +131,14 @@ class FastImageViewConverter {
+         return options;
+     }
+ 
++    private static double getBlurRadius(ReadableMap source) {
++        if (source.hasKey("blurRadius")) {
++            return source.getDouble("blurRadius");
++        }
++
++        return 0;
++    }
++
+     private static FastImageCacheControl getCacheControl(ReadableMap source) {
+         return getValueFromSource("cache", "immutable", FAST_IMAGE_CACHE_CONTROL_MAP, source);
+     }
+diff --git a/node_modules/react-native-fast-image/dist/index.cjs.js b/node_modules/react-native-fast-image/dist/index.cjs.js
+index 2df6a29..b3a2b27 100644
+--- a/node_modules/react-native-fast-image/dist/index.cjs.js
++++ b/node_modules/react-native-fast-image/dist/index.cjs.js
+@@ -39,7 +39,7 @@ const resolveDefaultSource = defaultSource => {
+     const resolved = reactNative.Image.resolveAssetSource(defaultSource);
+ 
+     if (resolved) {
+-      return resolved.uri;
++      return resolved?.uri;
+     }
+ 
+     return null;
+@@ -54,6 +54,7 @@ function FastImageBase({
+   source,
+   defaultSource,
+   tintColor,
++  blurRadius,
+   onLoadStart,
+   onProgress,
+   onLoad,
+@@ -86,19 +87,26 @@ function FastImageBase({
+       onLoad: onLoad,
+       onError: onError,
+       onLoadEnd: onLoadEnd,
+-      resizeMode: resizeMode
++      resizeMode: resizeMode,
++      blurRadius: blurRadius,
+     })), children);
+   }
+ 
+   const resolvedSource = reactNative.Image.resolveAssetSource(source);
+   const resolvedDefaultSource = resolveDefaultSource(defaultSource);
++
++  const resultSource = Platform.OS === 'android'
++    ? Object.assign({}, resolvedSource, { blurRadius: blurRadius })
++    : resolvedSource;
++
+   return /*#__PURE__*/React__default['default'].createElement(reactNative.View, {
+     style: [styles.imageContainer, style],
+     ref: forwardedRef
+   }, /*#__PURE__*/React__default['default'].createElement(FastImageView, _extends__default['default']({}, props, {
+     tintColor: tintColor,
++    blurRadius: blurRadius,
+     style: reactNative.StyleSheet.absoluteFill,
+-    source: resolvedSource,
++    source: resultSource,
+     defaultSource: resolvedDefaultSource,
+     onFastImageLoadStart: onLoadStart,
+     onFastImageProgress: onProgress,
+diff --git a/node_modules/react-native-fast-image/dist/index.d.ts b/node_modules/react-native-fast-image/dist/index.d.ts
+index 5abb7c9..a340f3d 100644
+--- a/node_modules/react-native-fast-image/dist/index.d.ts
++++ b/node_modules/react-native-fast-image/dist/index.d.ts
+@@ -26,6 +26,7 @@ export declare type Source = {
+     };
+     priority?: Priority;
+     cache?: Cache;
++    blurRadius?: number,
+ };
+ export interface OnLoadEvent {
+     nativeEvent: {
+@@ -81,6 +82,12 @@ export interface FastImageProps extends AccessibilityProps, ViewProps {
+      * If supplied, changes the color of all the non-transparent pixels to the given color.
+      */
+     tintColor?: ColorValue;
++    /**
++     * BlurRadius
++     *
++     * The blur radius of the blur filter added to the image.
++     */
++    blurRadius?: number
+     /**
+      * A unique identifier for this element to be used in UI Automation testing scripts.
+      */
+diff --git a/node_modules/react-native-fast-image/dist/index.js b/node_modules/react-native-fast-image/dist/index.js
+index 58e0308..363dc26 100644
+--- a/node_modules/react-native-fast-image/dist/index.js
++++ b/node_modules/react-native-fast-image/dist/index.js
+@@ -32,7 +32,7 @@ const resolveDefaultSource = defaultSource => {
+     const resolved = Image.resolveAssetSource(defaultSource);
+ 
+     if (resolved) {
+-      return resolved.uri;
++      return resolved?.uri;
+     }
+ 
+     return null;
+@@ -47,6 +47,7 @@ function FastImageBase({
+   source,
+   defaultSource,
+   tintColor,
++  blurRadius,
+   onLoadStart,
+   onProgress,
+   onLoad,
+@@ -80,18 +81,25 @@ function FastImageBase({
+       onError: onError,
+       onLoadEnd: onLoadEnd,
+       resizeMode: resizeMode
++      blurRadius: blurRadius,
+     })), children);
+   }
+ 
+   const resolvedSource = Image.resolveAssetSource(source);
+   const resolvedDefaultSource = resolveDefaultSource(defaultSource);
++
++  const resultSource = Platform.OS === 'android'
++    ? Object.assign({}, resolvedSource, { blurRadius: blurRadius })
++    : resolvedSource
++
+   return /*#__PURE__*/React.createElement(View, {
+     style: [styles.imageContainer, style],
+     ref: forwardedRef
+   }, /*#__PURE__*/React.createElement(FastImageView, _extends({}, props, {
+     tintColor: tintColor,
++    blurRadius: blurRadius,
+     style: StyleSheet.absoluteFill,
+-    source: resolvedSource,
++    source: resultSource,
+     defaultSource: resolvedDefaultSource,
+     onFastImageLoadStart: onLoadStart,
+     onFastImageProgress: onProgress,
+diff --git a/node_modules/react-native-fast-image/dist/index.js.flow b/node_modules/react-native-fast-image/dist/index.js.flow
+index 8124c86..b9a26ef 100644
+--- a/node_modules/react-native-fast-image/dist/index.js.flow
++++ b/node_modules/react-native-fast-image/dist/index.js.flow
+@@ -60,6 +60,7 @@ export type FastImageProps = $ReadOnly<{|
+     defaultSource?: ?number,
+ 
+     tintColor?: number | string,
++    blurRadius?: number,
+     resizeMode?: ?ResizeModes,
+     fallback?: ?boolean,
+     testID?: ?string,
+diff --git a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.h b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.h
+index e52fca7..c5b0bae 100644
+--- a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.h
++++ b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.h
+@@ -19,6 +19,7 @@
+ @property (nonatomic, strong) FFFastImageSource *source;
+ @property (nonatomic, strong) UIImage *defaultSource;
+ @property (nonatomic, strong) UIColor *imageColor;
++@property (nonatomic, assign) CGFloat blurRadius;
+ 
+ @end
+ 
+diff --git a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.m b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.m
+index f710081..b189400 100644
+--- a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.m
++++ b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.m
+@@ -1,6 +1,7 @@
+ #import "FFFastImageView.h"
+ #import <SDWebImage/UIImage+MultiFormat.h>
+ #import <SDWebImage/UIView+WebCache.h>
++#import <CoreImage/CoreImage.h>
+ 
+ @interface FFFastImageView ()
+ 
+@@ -71,6 +72,13 @@ - (void) setImageColor: (UIColor*)imageColor {
+     }
+ }
+ 
++- (void)setBlurRadius:(CGFloat)blurRadius {
++    if (_blurRadius != blurRadius) {
++        _blurRadius = blurRadius;
++        _needsReload = YES;
++    }
++}
++
+ - (UIImage*) makeImage: (UIImage*)image withTint: (UIColor*)color {
+     UIImage* newImage = [image imageWithRenderingMode: UIImageRenderingModeAlwaysTemplate];
+     UIGraphicsBeginImageContextWithOptions(image.size, NO, newImage.scale);
+@@ -82,6 +90,13 @@ - (UIImage*) makeImage: (UIImage*)image withTint: (UIColor*)color {
+ }
+ 
+ - (void) setImage: (UIImage*)image {
++    if (_blurRadius && _blurRadius > 0) {
++        UIImage *blurImage = [self blurImage: image withRadius: _blurRadius];
++        if (blurImage) {
++            image = blurImage;
++        }
++    }
++    
+     if (self.imageColor != nil) {
+         super.image = [self makeImage: image withTint: self.imageColor];
+     } else {
+@@ -237,6 +252,29 @@ - (void) downloadImage: (FFFastImageSource*)source options: (SDWebImageOptions)o
+             }];
+ }
+ 
++- (UIImage *)blurImage:(UIImage *)image withRadius:(CGFloat)radius {
++    CIContext *context = [CIContext contextWithOptions:nil];
++    CIImage *inputImage = [CIImage imageWithCGImage:image.CGImage];
++
++    CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
++    [filter setValue:inputImage forKey:kCIInputImageKey];
++    [filter setValue:[NSNumber numberWithFloat:radius] forKey:kCIInputRadiusKey];
++    CIImage *outputImage = [filter valueForKey:kCIOutputImageKey];
++
++    if (outputImage) {
++        CGRect rect = CGRectMake(radius * 2, radius * 2, image.size.width - radius * 4, image.size.height - radius * 4);
++        CGImageRef outputImageRef = [context createCGImage:outputImage fromRect:rect];
++
++        if (outputImageRef) {
++            UIImage *blurImage = [UIImage imageWithCGImage:outputImageRef];
++            CGImageRelease(outputImageRef);
++            return blurImage;
++        }
++    }
++
++    return nil;
++}
++
+ - (void) dealloc {
+     [self sd_cancelCurrentImageLoad];
+ }
+diff --git a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageViewManager.m b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageViewManager.m
+index 84ca94e..76376e6 100644
+--- a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageViewManager.m
++++ b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageViewManager.m
+@@ -21,6 +21,7 @@ - (FFFastImageView*)view {
+ RCT_EXPORT_VIEW_PROPERTY(onFastImageLoad, RCTDirectEventBlock)
+ RCT_EXPORT_VIEW_PROPERTY(onFastImageLoadEnd, RCTDirectEventBlock)
+ RCT_REMAP_VIEW_PROPERTY(tintColor, imageColor, UIColor)
++RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat)
+ 
+ RCT_EXPORT_METHOD(preload:(nonnull NSArray<FFFastImageSource *> *)sources)
+ {

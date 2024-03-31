@@ -40,7 +40,12 @@ const HomeScreen: React.FC<IHomeScreen> = ({
       <Text style={styles.title}>Home</Text>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={onRefresh} colors={[colors.whiteF5]} />
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={onRefresh}
+            tintColor={colors.white}
+            colors={[colors.black]}
+          />
         }
       >
         <FlatList
@@ -49,6 +54,7 @@ const HomeScreen: React.FC<IHomeScreen> = ({
           data={videoList}
           renderItem={renderVideoItem}
           keyExtractor={(item) => `${item.id}`}
+          showsHorizontalScrollIndicator={false}
           horizontal
         />
         <FlatList
