@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Dimensions } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View } from 'react-native';
 import Video from 'react-native-video';
 import VideoPlayer from 'react-native-media-console';
 
-import { IEpisode } from 'src/interfaces/store/homeStore.interface';
+import { IEpisode, IVideo } from 'src/interfaces/store/homeStore.interface';
 import styles from './styles';
+import useHistoryStore from 'src/store/history';
+import useCurrentVideoStore from 'src/store/currentVideo';
 
 interface IEpisodeItem {
   episode: IEpisode;
@@ -13,11 +15,30 @@ interface IEpisodeItem {
 };
 
 const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) => {
+  const { setHistory } = useHistoryStore((state) => ({
+    setHistory: state.setHistory,
+  }));
+
+  const { currentVideo } = useCurrentVideoStore((state) => ({
+    currentVideo: state.currentVideo,
+  }));
+
+  const currentTime = useRef(0);
+
+  const onChangeCurrentTime = (curTime: number) => {
+    currentTime.current = curTime
+  };
+
+  useEffect(() => {
+    return () => {
+      if (currentTime.current !== 0) {
+        setHistory(currentVideo as IVideo, episode.id, currentTime.current);
+      }
+    };
+  }, [shouldPlay]);
+
   return (
-    <View style={[styles.container, { height }]}>
-      {/* <View style={styles.titleContainer}>
-        <Text style={styles.nameText}>{episode.name}</Text>
-      </View> */}
+    <View style={[styles.container, { height }]} key={episode.id}>
       {/* <Video 
         source={{ uri: episode.url }}
         style={{ height, width: '100%' }}
@@ -37,8 +58,7 @@ const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) =>
         repeat={true}
         paused={!shouldPlay}
         controls={false}
-        tapAnywhereToPause
-        // alwaysShowControls={true}
+        alwaysShowControls={true}
         playInBackground={false}
         playWhenInactive={false}
         resizeMode={'cover'}
@@ -49,6 +69,14 @@ const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) =>
         disableOverlay
         disableTimer
         disablePlayPause
+        onChangeCurrentTime={onChangeCurrentTime}
+        maxBitRate={20000}
+        bufferConfig={{
+          minBufferMs: 1500,
+          maxBufferMs: 2500,
+          bufferForPlaybackMs: 2500,
+          bufferForPlaybackAfterRebufferMs: 5000,
+        }}
       />
     </View>
   );

@@ -2,17 +2,16 @@ import { create } from 'zustand';
 
 import { NavigationScreens } from 'src/interfaces/global.interface';
 import { navigationRef } from 'src/navigation';
-import { ICurrentVideoStore } from 'src/interfaces/currentVideoStore.interface';
-import { IVideo } from 'src/interfaces/store/homeStore.interface';
+import { ICurrentVideoStore } from 'src/interfaces/store/currentVideoStore.interface';
 
 
 const useCurrentVideoStore = create<ICurrentVideoStore>()((set) => ({
   currentVideo: null,
-  setCurrentVideo: (currentVideo) => {
+  setCurrentVideo: (currentVideo, params) => {
     set(() => ({
       currentVideo,
     }));
-    navigationRef.current?.navigate(NavigationScreens.Episodes);
+    navigationRef.current?.navigate(NavigationScreens.Episodes, params);
   }
 }));
 

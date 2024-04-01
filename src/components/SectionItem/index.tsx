@@ -5,6 +5,7 @@ import { ISection, IVideo } from 'src/interfaces/store/homeStore.interface';
 import SectionVideoItem from '../SectionVideoItem';
 
 import styles from './styles';
+import SectionTitle from '../SectionTitle';
 
 interface ISectionItem {
   section: ISection;
@@ -19,9 +20,7 @@ const SectionItem: React.FC<ISectionItem> = ({ section }) => {
 
   return (
     <>
-      <Text style={styles.titleText}>
-        {section.title}
-      </Text>
+      <SectionTitle title={section.title} />
       <FlatList
         ListHeaderComponent={<View style={styles.spaceFlatList} />}
         ListFooterComponent={<View style={styles.spaceFlatList} />}

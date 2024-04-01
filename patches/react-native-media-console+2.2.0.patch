@@ -8,11 +8,44 @@ index 16c377d..c535865 100644
 -export declare const VideoPlayer: (props: Omit<VideoPlayerProps, 'animations'>) => JSX.Element;
 +import type { VideoProperties } from 'react-native-video';
 +export declare const VideoPlayer: (props: Omit<VideoPlayerProps, 'animations'> & VideoProperties) => JSX.Element;
+diff --git a/node_modules/react-native-media-console/lib/typescript/types.d.ts b/node_modules/react-native-media-console/lib/typescript/types.d.ts
+index 7ebf6ae..3a0eb1a 100644
+--- a/node_modules/react-native-media-console/lib/typescript/types.d.ts
++++ b/node_modules/react-native-media-console/lib/typescript/types.d.ts
+@@ -15,6 +15,7 @@ export declare type VideoAnimations = {
+     controlsOpacity: StyleProps;
+ };
+ export interface VideoPlayerProps extends ReactVideoProps {
++    onChangeCurrentTime: (currentTime: number) => void;
+     animations?: VideoAnimations;
+     useAnimations?: (controlAnimationTiming: number) => VideoAnimations;
+     /**
 diff --git a/node_modules/react-native-media-console/src/VideoPlayer.tsx b/node_modules/react-native-media-console/src/VideoPlayer.tsx
-index 41e2860..e3dfaa8 100644
+index 41e2860..d3de518 100644
 --- a/node_modules/react-native-media-console/src/VideoPlayer.tsx
 +++ b/node_modules/react-native-media-console/src/VideoPlayer.tsx
-@@ -430,6 +430,7 @@ const AnimatedVideoPlayer = (
+@@ -75,6 +75,7 @@ const AnimatedVideoPlayer = (
+     navigator,
+     rewindTime = 15,
+     pan: {horizontal: horizontalPan, inverted: invertedPan} = {},
++    onChangeCurrentTime,
+   } = props;
+ 
+   const mounted = useRef(false);
+@@ -345,6 +346,12 @@ const AnimatedVideoPlayer = (
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [currentTime, duration, seekerWidth, setSeekerPosition]);
+ 
++  useEffect(() => {
++    if (onChangeCurrentTime) {
++      onChangeCurrentTime(currentTime);
++    }
++  }, [currentTime]);
++
+   useEffect(() => {
+     if (showControls && !loading) {
+       animations.showControlAnimation();
+@@ -430,6 +437,7 @@ const AnimatedVideoPlayer = (
                onBack={events.onBack}
                resetControlTimeout={resetControlTimeout}
                showControls={showControls}
@@ -20,7 +53,7 @@ index 41e2860..e3dfaa8 100644
              />
              <PlayPause
                animations={animations}
-@@ -460,6 +461,7 @@ const AnimatedVideoPlayer = (
+@@ -460,6 +468,7 @@ const AnimatedVideoPlayer = (
                seekColor={seekColor}
                title={title}
                toggleTimer={toggleTimer}
@@ -29,15 +62,16 @@ index 41e2860..e3dfaa8 100644
                seekerFillWidth={seekerFillWidth}
                seekerPosition={seekerPosition}
 diff --git a/node_modules/react-native-media-console/src/components/BottomControls.tsx b/node_modules/react-native-media-console/src/components/BottomControls.tsx
-index 86a949d..3b73af3 100644
+index 86a949d..b0a3d1e 100644
 --- a/node_modules/react-native-media-console/src/components/BottomControls.tsx
 +++ b/node_modules/react-native-media-console/src/components/BottomControls.tsx
-@@ -4,15 +4,19 @@ import {
+@@ -4,15 +4,20 @@ import {
    SafeAreaView,
    StyleSheet,
    GestureResponderHandlers,
 +  Image,
 +  View,
++  Dimensions,
  } from 'react-native';
  import {Timer} from './Timer';
  import {Title} from './Title';
@@ -53,7 +87,7 @@ index 86a949d..3b73af3 100644
  
  interface BottomControlsProps {
    showControls: boolean;
-@@ -36,8 +40,12 @@ interface BottomControlsProps {
+@@ -36,8 +41,12 @@ interface BottomControlsProps {
    isFullscreen: boolean;
    disableFullscreen: boolean;
    toggleFullscreen: () => void;
@@ -66,7 +100,7 @@ index 86a949d..3b73af3 100644
  export const BottomControls = ({
    showControls,
    animations: {AnimatedView, ...animations},
-@@ -59,7 +67,23 @@ export const BottomControls = ({
+@@ -59,7 +68,23 @@ export const BottomControls = ({
    isFullscreen,
    disableFullscreen,
    toggleFullscreen,
@@ -90,7 +124,7 @@ index 86a949d..3b73af3 100644
    const timerControl = disableTimer ? (
      <NullControl />
    ) : (
-@@ -86,6 +110,7 @@ export const BottomControls = ({
+@@ -86,6 +111,7 @@ export const BottomControls = ({
        seekColor={seekColor}
        seekerPanHandlers={panHandlers}
        setSeekerWidth={setSeekerWidth}
@@ -98,7 +132,7 @@ index 86a949d..3b73af3 100644
      />
    );
  
-@@ -113,11 +138,40 @@ export const BottomControls = ({
+@@ -113,11 +139,42 @@ export const BottomControls = ({
          imageStyle={[styles.vignette]}>
          <SafeAreaView style={[styles.row, _styles.bottomControlGroup]}>
            {timerControl}
@@ -108,40 +142,42 @@ index 86a949d..3b73af3 100644
          </SafeAreaView>
          <SafeAreaView style={styles.seekBarContainer}>
 -          {seekbarControl}
-+          {pauseControl}
-+          <View style={_styles.seekbarContainer}>
-+            {seekbarControl}
-+            <View style={_styles.timeContainer}>
-+              <Timer
-+                resetControlTimeout={resetControlTimeout}
-+                toggleTimer={toggleTimer}
-+                showControls={showControls}>
-+                {calculateTime({
-+                  showDuration,
-+                  showHours,
-+                  showTimeRemaining,
-+                  time: currentTime,
-+                  duration,
-+                })}
-+              </Timer>
-+              <Timer
-+                resetControlTimeout={resetControlTimeout}
-+                toggleTimer={toggleTimer}
-+                showControls={showControls}>
-+                {getDuration({
-+                  showDuration,
-+                  showHours,
-+                  showTimeRemaining,
-+                  time: currentTime,
-+                  duration,
-+                })}
-+              </Timer>
++          <View style={_styles.pauseAndSeekContainer}>
++            {pauseControl}
++            <View style={_styles.seekbarContainer}>
++              {seekbarControl}
 +            </View>
++          </View>
++          <View pointerEvents='none' style={_styles.timeContainer}>
++            <Timer
++              resetControlTimeout={resetControlTimeout}
++              toggleTimer={toggleTimer}
++              showControls={showControls}>
++              {calculateTime({
++                showDuration,
++                showHours,
++                showTimeRemaining,
++                time: currentTime,
++                duration,
++              })}
++            </Timer>
++            <Timer
++              resetControlTimeout={resetControlTimeout}
++              toggleTimer={toggleTimer}
++              showControls={showControls}>
++              {getDuration({
++                showDuration,
++                showHours,
++                showTimeRemaining,
++                time: currentTime,
++                duration,
++              })}
++            </Timer>
 +          </View>
          </SafeAreaView>
        </ImageBackground>
      </AnimatedView>
-@@ -138,4 +192,12 @@ const _styles = StyleSheet.create({
+@@ -138,4 +195,19 @@ const _styles = StyleSheet.create({
      marginRight: 12,
      marginBottom: 0,
    },
@@ -149,10 +185,17 @@ index 86a949d..3b73af3 100644
 +    flex: 1,
 +  },
 +  timeContainer: {
-+    marginTop: moderateScale(10),
++    marginTop: -moderateScale(13),
++    paddingRight: moderateScale(16),
++    paddingLeft: moderateScale(40),
 +    flexDirection: 'row',
 +    justifyContent: 'space-between',
 +  },
++  pauseAndSeekContainer: {
++    width: Dimensions.get('window').width,
++    flexDirection: 'row',
++    paddingHorizontal: moderateScale(16),
++  }
  });
 diff --git a/node_modules/react-native-media-console/src/components/Seekbar/Seekbar.tsx b/node_modules/react-native-media-console/src/components/Seekbar/Seekbar.tsx
 index 7da87c5..bd69bdb 100644
@@ -290,7 +333,7 @@ index 8a60d83..9846562 100644
 +  },
  });
 diff --git a/node_modules/react-native-media-console/src/components/styles.ts b/node_modules/react-native-media-console/src/components/styles.ts
-index 380b624..1496001 100644
+index 380b624..f109029 100644
 --- a/node_modules/react-native-media-console/src/components/styles.ts
 +++ b/node_modules/react-native-media-console/src/components/styles.ts
 @@ -1,4 +1,7 @@
@@ -302,15 +345,13 @@ index 380b624..1496001 100644
  
  export const styles = StyleSheet.create({
    row: {
-@@ -25,6 +28,22 @@ export const styles = StyleSheet.create({
+@@ -25,6 +28,20 @@ export const styles = StyleSheet.create({
      textAlign: 'center',
    },
    seekBarContainer: {
 -    width: '100%',
 +    width: Dimensions.get('window').width,
 +    marginBottom: height * 0.03,
-+    paddingHorizontal: moderateScale(16),
-+    flexDirection: 'row',
 +  },
 +  playContainer: {
 +    width: moderateScale(24),

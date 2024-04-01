@@ -1,5 +1,5 @@
 import React, { RefObject } from 'react';
-import { View, Text, ScrollView, FlatList, ViewabilityConfigCallbackPairs } from 'react-native';
+import { View, Text, ScrollView, FlatList, ViewabilityConfigCallbackPairs, Platform } from 'react-native';
 
 import { IEpisode } from 'src/interfaces/store/homeStore.interface';
 import EpisodeItem from 'src/components/EpisodeItem';
@@ -7,8 +7,6 @@ import CloseButton from 'src/components/CloseButton';
 import ShadowContainer from 'src/components/ShadowContainer';
 
 import styles from './styles';
-import { colors } from 'src/constants/colors';
-import LinearGradient from 'react-native-linear-gradient';
 
 interface IEpisodesScreen {
   episodes: IEpisode[];
@@ -41,6 +39,13 @@ const EpisodesScreen: React.FC<IEpisodesScreen> = ({ episodes, viewabilityConfig
           horizontal={false}
           showsVerticalScrollIndicator={false}
           viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current || undefined}
+          {
+            ...Platform.select({
+              android: {
+                removeClippedSubviews: false
+              },
+            })
+          }
         />
       </View>
     </ShadowContainer>

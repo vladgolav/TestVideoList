@@ -8,12 +8,14 @@ import VideoItem from 'src/components/VideoItem';
 import { colors } from 'src/constants/colors';
 import styles from './styles';
 import SectionItem from 'src/components/SectionItem';
+import ContinueWatchingSection from 'src/components/ContinueWatchingSection';
 
 interface IHomeScreen {
   loading: boolean;
   onRefresh: () => void;
   sections: SectionsType;
   videoList: VideosType;
+  lastVideoWatched: number | null;
 };
 
 const HomeScreen: React.FC<IHomeScreen> = ({
@@ -21,6 +23,7 @@ const HomeScreen: React.FC<IHomeScreen> = ({
   onRefresh,
   sections,
   videoList,
+  lastVideoWatched,
 }) => {
 
   const renderVideoItem = ({ item } : { item: IVideo }) => (
@@ -57,6 +60,11 @@ const HomeScreen: React.FC<IHomeScreen> = ({
           showsHorizontalScrollIndicator={false}
           horizontal
         />
+        {
+          typeof lastVideoWatched === 'number' ? (
+            <ContinueWatchingSection />
+          ) : null
+        }
         <FlatList
           data={sections}
           renderItem={renderSectionItem}
