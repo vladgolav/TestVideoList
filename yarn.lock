@@ -5911,6 +5911,11 @@ react-native-linear-gradient@2.8.3:
   resolved "https://registry.npmjs.org/react-native-linear-gradient/-/react-native-linear-gradient-2.8.3.tgz#9a116649f86d74747304ee13db325e20b21e564f"
   integrity sha512-KflAXZcEg54PXkLyflaSZQ3PJp4uC4whM7nT/Uot9m0e/qxFV3p6uor1983D1YOBJbJN7rrWdqIjq0T42jOJyA==
 
+react-native-media-console@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npmjs.org/react-native-media-console/-/react-native-media-console-2.2.0.tgz#a6cf94ca6945d1fbeb1ae6f8cc3422d9fad13f22"
+  integrity sha512-TsClEFUz9OZ3d2wU4w0wYY9RA2ULCi3VFyKW4ho9by9WHGMokSwCViDMVE6+PuE6Fi4a+IgwgtcJ0euqI2aYAg==
+
 react-native-mmkv@2.12.2:
   version "2.12.2"
   resolved "https://registry.npmjs.org/react-native-mmkv/-/react-native-mmkv-2.12.2.tgz#4bba0f5f04e2cf222494cce3a9794ba6a4894dee"

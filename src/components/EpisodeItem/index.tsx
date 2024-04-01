@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Dimensions } from 'react-native';
 import Video from 'react-native-video';
+import VideoPlayer from 'react-native-media-console';
 
 import { IEpisode } from 'src/interfaces/store/homeStore.interface';
 import styles from './styles';
@@ -12,23 +13,12 @@ interface IEpisodeItem {
 };
 
 const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) => {
-
-  useEffect(() => {
-    // if (!videoRef.current) return;
-
-    // if (shouldPlay) {
-    //   videoRef.current.play?.();
-    // } else {
-    //   videoRef.current?.pause?.()
-    // }
-  }, [shouldPlay])
-
   return (
     <View style={[styles.container, { height }]}>
-      <View style={styles.titleContainer}>
+      {/* <View style={styles.titleContainer}>
         <Text style={styles.nameText}>{episode.name}</Text>
-      </View>
-      <Video 
+      </View> */}
+      {/* <Video 
         source={{ uri: episode.url }}
         style={{ height, width: '100%' }}
         ignoreSilentSwitch={'ignore'}
@@ -38,6 +28,27 @@ const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) =>
         playInBackground={false}
         playWhenInactive={false}
         resizeMode={'cover'}
+      /> */}
+      <VideoPlayer
+        source={{ uri: episode.url }}
+        style={[styles.video, { height }]}
+        title={episode.name}
+        ignoreSilentSwitch={'ignore'}
+        repeat={true}
+        paused={!shouldPlay}
+        controls={false}
+        tapAnywhereToPause
+        // alwaysShowControls={true}
+        playInBackground={false}
+        playWhenInactive={false}
+        resizeMode={'cover'}
+        disableFullscreen
+        disableBack
+        disableVolume
+        disableSeekButtons
+        disableOverlay
+        disableTimer
+        disablePlayPause
       />
     </View>
   );

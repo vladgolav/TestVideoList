@@ -13,7 +13,7 @@ interface IShadowContainer {
 
 const ShadowContainer: React.FC<IShadowContainer> = ({ children, setHeight }) => {
   const onLayout = ({ nativeEvent } : LayoutChangeEvent) => {
-    setHeight(nativeEvent.layout.height);
+    setHeight(nativeEvent.layout.height - 2);
   }
 
   return (

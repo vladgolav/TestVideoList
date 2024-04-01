@@ -25,4 +25,7 @@ export default StyleSheet.create({
     letterSpacing: -0.05,
     fontWeight: '700',
   },
+  video: {
+    width: '100%',
+  },
 });
