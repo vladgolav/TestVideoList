@@ -7,11 +7,13 @@ import { ICurrentVideoStore } from 'src/interfaces/store/currentVideoStore.inter
 
 const useCurrentVideoStore = create<ICurrentVideoStore>()((set) => ({
   currentVideo: null,
-  setCurrentVideo: (currentVideo, params) => {
+  continueWatching: false,
+  setCurrentVideo: (currentVideo, continueWatching = false) => {
     set(() => ({
       currentVideo,
+      continueWatching,
     }));
-    navigationRef.current?.navigate(NavigationScreens.Episodes, params);
+    navigationRef.current?.navigate(NavigationScreens.Episodes);
   }
 }));
 

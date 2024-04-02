@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import Video from 'react-native-video';
 import VideoPlayer from 'react-native-media-console';
+import _ from 'lodash';
 
-import { IEpisode, IVideo } from 'src/interfaces/store/homeStore.interface';
+import { IEpisode } from 'src/interfaces/store/homeStore.interface';
 import styles from './styles';
 import useHistoryStore from 'src/store/history';
 import useCurrentVideoStore from 'src/store/currentVideo';
@@ -15,30 +16,39 @@ interface IEpisodeItem {
 };
 
 const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) => {
-  const { setHistory } = useHistoryStore((state) => ({
-    setHistory: state.setHistory,
+  const { currentVideo, continueWatching } = useCurrentVideoStore((state) => ({
+    currentVideo: state.currentVideo,
+    continueWatching: state.continueWatching,
   }));
 
-  const { currentVideo } = useCurrentVideoStore((state) => ({
-    currentVideo: state.currentVideo,
+  const { setHistory, historySeek = 0 } = useHistoryStore((state) => ({
+    setHistory: state.setHistory,
+    historySeek: state.history[currentVideo?.id as number]?.[episode.id],
   }));
 
   const currentTime = useRef(0);
+  const videoRef = useRef<Video>(null);
 
+  const setHistoryToStore = _.throttle((duration) => {
+    console.log('here', episode.id)
+    // setHistory(currentVideo?.id as number, episode.id, duration)
+  }, 3000);
+  console.log('render')
   const onChangeCurrentTime = (curTime: number) => {
-    currentTime.current = curTime
+    if (curTime !== 0 && shouldPlay) {
+      currentTime.current = curTime;
+      setHistoryToStore(curTime);
+    }
   };
 
-  useEffect(() => {
-    return () => {
-      if (currentTime.current !== 0) {
-        setHistory(currentVideo as IVideo, episode.id, currentTime.current);
-      }
-    };
-  }, [shouldPlay]);
+  const onLoad = () => {
+    if (videoRef?.current?.seek && continueWatching) {
+      videoRef?.current?.seek(historySeek)
+    }
+  };
 
   return (
-    <View style={[styles.container, { height }]} key={episode.id}>
+    <View style={[styles.container, { height }]}>
       {/* <Video 
         source={{ uri: episode.url }}
         style={{ height, width: '100%' }}
@@ -51,6 +61,7 @@ const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) =>
         resizeMode={'cover'}
       /> */}
       <VideoPlayer
+        videoRef={videoRef}
         source={{ uri: episode.url }}
         style={[styles.video, { height }]}
         title={episode.name}
@@ -69,6 +80,7 @@ const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) =>
         disableOverlay
         disableTimer
         disablePlayPause
+        onLoad={onLoad}
         onChangeCurrentTime={onChangeCurrentTime}
         maxBitRate={20000}
         bufferConfig={{

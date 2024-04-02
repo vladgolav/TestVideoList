@@ -6,20 +6,26 @@ import useHistoryStore from 'src/store/history';
 
 import ArrowIcon from 'src/assets/images/ArrowIcon.png';
 import styles from './styles';
+import useCurrentVideoStore from 'src/store/currentVideo';
 
 const ContinueWatchingItem = () => {
-  const { lastVideoWatched, history } = useHistoryStore((state) => ({
-    lastVideoWatched: state.lastVideoWatched,
-    history: state.history,
+  const { historyVideo } = useHistoryStore((state) => ({
+    historyVideo: state.history[state.lastVideoWatched as number],
   }));
 
-  const continueWatchingVideo = useRef(history?.[lastVideoWatched as number]).current;
-  console.log('continueWatchingVideo', continueWatchingVideo.video.poster)
+  const { setCurrentVideo } = useCurrentVideoStore((state) => ({
+    setCurrentVideo: state.setCurrentVideo,
+  }));
+
+
+  const onPress = () => {
+    setCurrentVideo(historyVideo.video, true);
+  };
 
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <FastImage
-        source={{ uri: continueWatchingVideo.video.poster }}
+        source={{ uri: historyVideo.video.poster }}
         style={styles.poster}
         resizeMode="cover"
       />
@@ -28,15 +34,15 @@ const ContinueWatchingItem = () => {
           style={styles.titleText}
           numberOfLines={1}
         >
-          {continueWatchingVideo.video.title}
+          {historyVideo.video.title}
         </Text>
         {
-          continueWatchingVideo.video.subTitle ? (
+          historyVideo.video.subTitle ? (
             <Text
               style={styles.subTitleText}
               numberOfLines={1}
             >
-              {continueWatchingVideo.video.subTitle}
+              {historyVideo.video.subTitle}
             </Text>
           ) : null
         }

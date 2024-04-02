@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React, { Ref, RefObject, forwardRef } from 'react';
 import { View, Text, ScrollView, FlatList, ViewabilityConfigCallbackPairs, Platform } from 'react-native';
 
 import { IEpisode } from 'src/interfaces/store/homeStore.interface';
@@ -14,15 +14,26 @@ interface IEpisodesScreen {
   viewabilityConfigCallbackPairs: RefObject<ViewabilityConfigCallbackPairs>
   setHeight: (value: number) => void;
   height: number;
+  inititalScrollIndex: number;
+  scrollToIndexCondition: boolean;
 };
 
-const EpisodesScreen: React.FC<IEpisodesScreen> = ({ episodes, viewabilityConfigCallbackPairs, currentViewableItemIndex, setHeight, height }) => {
+const EpisodesScreen = ({
+  episodes,
+  viewabilityConfigCallbackPairs,
+  currentViewableItemIndex,
+  setHeight,
+  height,
+  scrollToIndexCondition,
+  inititalScrollIndex,
+} : IEpisodesScreen, ref: Ref<FlatList>) => {
   const renderItem = ({ item, index } : { item: IEpisode, index: number }) => {
     return (
       <EpisodeItem
         episode={item}
         shouldPlay={index === currentViewableItemIndex}
         height={height}
+        key={item.id}
       />
     );
   };
@@ -32,13 +43,19 @@ const EpisodesScreen: React.FC<IEpisodesScreen> = ({ episodes, viewabilityConfig
       <View style={styles.container}>
         <CloseButton />
         <FlatList
+          ref={ref}
           data={episodes}
           renderItem={renderItem}
           keyExtractor={item => `${item.id}`}
           pagingEnabled
+          initialScrollIndex={scrollToIndexCondition ? inititalScrollIndex : 0}
           horizontal={false}
           showsVerticalScrollIndicator={false}
           viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current || undefined}
+          onScrollToIndexFailed={() => {}}
+          getItemLayout={(data, index) => (
+            {length: height, offset: height * index, index}
+          )}
           {
             ...Platform.select({
               android: {
@@ -52,4 +69,4 @@ const EpisodesScreen: React.FC<IEpisodesScreen> = ({ episodes, viewabilityConfig
   );
 };
 
-export default EpisodesScreen;
+export default forwardRef(EpisodesScreen);

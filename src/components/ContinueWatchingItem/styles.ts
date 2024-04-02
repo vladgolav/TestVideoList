@@ -27,6 +27,9 @@ export default StyleSheet.create({
     fontSize: moderateScale(16),
     fontWeight: '700',
     lineHeight: moderateScale(20),
+    textShadowColor: 'rgba(0, 0, 0, 0.8)', 
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5,
   },
   subTitleText: {
     marginTop: moderateScale(4),
@@ -34,6 +37,9 @@ export default StyleSheet.create({
     lineHeight: moderateScale(18),
     color: colors.whiteE1,
     fontWeight: '400',
+    textShadowColor: 'rgba(0, 0, 0, 0.8)', 
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5,
   },
   rightContainer: {
     alignItems: 'flex-end',

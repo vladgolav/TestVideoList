@@ -7,7 +7,19 @@ import zustandStorage from 'src/utils/zustandPersistMmkv';
 const useHistoryStore = create<IHistoryStore>()(persist((set) => ({
   history: {},
   lastVideoWatched: null,
-  setHistory: (video, episodeId, duration) => {
+  setHistory: (videoId, episodeId, duration) => {
+    set((state) => ({
+      lastVideoWatched: videoId,
+      history: {
+        ...state.history,
+        [videoId]: {
+          ...state.history[videoId],
+          [episodeId]: duration,
+        },
+      }
+    }));
+  },
+  setLastEpisodeWatched: (video, episodeId) => {
     set((state) => ({
       lastVideoWatched: video.id,
       history: {
@@ -15,7 +27,7 @@ const useHistoryStore = create<IHistoryStore>()(persist((set) => ({
         [video.id]: {
           ...state.history[video.id],
           video,
-          [episodeId]: duration,
+          lastEpisodeWatched: episodeId,
         },
       }
     }));

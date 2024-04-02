@@ -44,7 +44,7 @@ export default StyleSheet.create({
   },
   textShadow: {
     textShadowColor: 'rgba(0, 0, 0, 0.8)', 
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 20,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5,
   },
 });
