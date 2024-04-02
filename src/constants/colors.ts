@@ -1,0 +1,16 @@
+export const colors = {
+  black: '#000000',
+  white: '#FFFFFF',
+  blackBackground: '#0F0F0F',
+  whiteF5: '#F5F5F5',
+  whiteF2: '#F2F3F5',
+  whiteC4: '#C4C8CC',
+  whiteEB: '#EBEDF0',
+  whiteE1: '#E1E3E6',
+  blue: '#00BFE5',
+  darkBlue: '#3598D0',
+  whiteOpacity: 'rgba(255, 255, 255, 0.3)',
+  textShadow: 'rgba(0, 0, 0, 0.8)',
+  linearGradientBlack09: 'rgba(0, 0, 0, 0.9)',
+  linearGradientTransparent: 'transparent',
+};
