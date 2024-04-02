@@ -13,7 +13,7 @@ import useCurrentVideoStore from 'src/store/currentVideo';
 
 interface ISectionVideoItem {
   video: IVideo;
-};
+}
 
 const SectionVideoItem: React.FC<ISectionVideoItem> = ({ video }) => {
   const { setCurrentVideo } = useCurrentVideoStore((state) => ({
@@ -24,7 +24,12 @@ const SectionVideoItem: React.FC<ISectionVideoItem> = ({ video }) => {
     if (video.commingSoon) {
       return (
         <View style={styles.blurView}>
-          <BlurView style={styles.lockIconContainer} blurType='light' blurAmount={20} overlayColor='transparent'>
+          <BlurView
+            style={styles.lockIconContainer}
+            blurType='light'
+            blurAmount={20}
+            overlayColor='transparent'
+          >
             <FastImage
               source={LockIcon}
               style={styles.lockIcon}
@@ -58,7 +63,11 @@ const SectionVideoItem: React.FC<ISectionVideoItem> = ({ video }) => {
 
   return (
     <>
-      <TouchableOpacity disabled={!!video.commingSoon} style={styles.container} onPress={onVideoPress}>
+      <TouchableOpacity
+        disabled={!!video.commingSoon}
+        style={styles.container}
+        onPress={onVideoPress}
+      >
         <FastImage
           source={{ uri: video.poster }}
           resizeMode='stretch'

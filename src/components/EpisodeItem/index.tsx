@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { View } from 'react-native';
 import Video from 'react-native-video';
 import VideoPlayer from 'react-native-media-console';
@@ -13,7 +13,7 @@ interface IEpisodeItem {
   episode: IEpisode;
   shouldPlay: boolean;
   height: number;
-};
+}
 
 const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) => {
   const { currentVideo, continueWatching } = useCurrentVideoStore((state) => ({
@@ -30,10 +30,9 @@ const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) =>
   const videoRef = useRef<Video>(null);
 
   const setHistoryToStore = _.throttle((duration) => {
-    console.log('here', episode.id)
-    // setHistory(currentVideo?.id as number, episode.id, duration)
+    setHistory(currentVideo?.id as number, episode.id, duration)
   }, 3000);
-  console.log('render')
+
   const onChangeCurrentTime = (curTime: number) => {
     if (curTime !== 0 && shouldPlay) {
       currentTime.current = curTime;
@@ -49,17 +48,6 @@ const EpisodeItem: React.FC<IEpisodeItem> = ({ episode, shouldPlay, height }) =>
 
   return (
     <View style={[styles.container, { height }]}>
-      {/* <Video 
-        source={{ uri: episode.url }}
-        style={{ height, width: '100%' }}
-        ignoreSilentSwitch={'ignore'}
-        repeat={true}
-        paused={!shouldPlay}
-        controls={false}
-        playInBackground={false}
-        playWhenInactive={false}
-        resizeMode={'cover'}
-      /> */}
       <VideoPlayer
         videoRef={videoRef}
         source={{ uri: episode.url }}

@@ -8,7 +8,7 @@ import useCurrentVideoStore from 'src/store/currentVideo';
 
 interface IVideoItem {
   video: IVideo;
-};
+}
 
 const VideoItem: React.FC<IVideoItem> = ({ video }) => {
   const { setCurrentVideo } = useCurrentVideoStore((state) => ({

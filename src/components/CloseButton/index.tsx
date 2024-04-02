@@ -5,7 +5,6 @@ import styles from './styles';
 
 import CloseIcon from 'src/assets/images/CloseIcon.png'
 import { navigationRef } from 'src/navigation';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const CloseButton = () => {
   const goBack = () => {

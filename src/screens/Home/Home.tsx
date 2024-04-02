@@ -2,7 +2,12 @@ import React from 'react';
 import { View, Text, ScrollView, RefreshControl, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ISection, IVideo, SectionsType, VideosType } from 'src/interfaces/store/homeStore.interface';
+import {
+  ISection,
+  IVideo,
+  SectionsType,
+  VideosType,
+} from 'src/interfaces/store/homeStore.interface';
 
 import VideoItem from 'src/components/VideoItem';
 import { colors } from 'src/constants/colors';
@@ -16,7 +21,7 @@ interface IHomeScreen {
   sections: SectionsType;
   videoList: VideosType;
   lastVideoWatched: number | null;
-};
+}
 
 const HomeScreen: React.FC<IHomeScreen> = ({
   loading,

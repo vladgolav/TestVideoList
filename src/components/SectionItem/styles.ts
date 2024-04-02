@@ -6,10 +6,10 @@ export default StyleSheet.create({
   container: {
 
   },
-  spaceFlatList: {
-    width: moderateScale(16),
-  },
   flatlist: {
     backgroundColor: colors.blackBackground,
+  },
+  spaceFlatList: {
+    width: moderateScale(16),
   },
 });

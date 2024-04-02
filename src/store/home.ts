@@ -3,7 +3,12 @@ import remoteConfig from '@react-native-firebase/remote-config';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware'
 
-import { IHomeStore, ISection, VideosType, ISectionParameter, SectionsType } from 'src/interfaces/store/homeStore.interface';
+import {
+  IHomeStore,
+  VideosType,
+  ISectionParameter,
+  SectionsType,
+} from 'src/interfaces/store/homeStore.interface';
 import zustandStorage from 'src/utils/zustandPersistMmkv';
 import { getVideoList } from 'src/utils/getVideoList';
 
@@ -23,7 +28,9 @@ const useHomeStore = create<IHomeStore>()(persist((set) => ({
         const parameters = remoteConfig().getAll();
         const videos = JSON.parse(parameters.videos?.asString() || '[]') as VideosType;
         const videoListParameter = JSON.parse(parameters.videoList?.asString() || '[]') as number[];
-        const sectionsParameter = JSON.parse(parameters.sections?.asString() || '{}') as ISectionParameter;
+        const sectionsParameter = JSON.parse(
+          parameters.sections?.asString() || '{}'
+        ) as ISectionParameter;
 
         const videoList = getVideoList(videoListParameter, videos);
 

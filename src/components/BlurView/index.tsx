@@ -7,7 +7,7 @@ import styles from './styles';
 interface IBlurView {
   style: ViewStyle;
   children: React.ReactNode;
-};
+}
 
 const BlurView: React.FC<IBlurView & BlurViewProps> = ({ style, children, ...props }) => {
   if (Platform.OS === 'android') {

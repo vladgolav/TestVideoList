@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { TouchableOpacity, Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 

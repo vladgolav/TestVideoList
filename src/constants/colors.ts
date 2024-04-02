@@ -10,6 +10,7 @@ export const colors = {
   blue: '#00BFE5',
   darkBlue: '#3598D0',
   whiteOpacity: 'rgba(255, 255, 255, 0.3)',
+  textShadow: 'rgba(0, 0, 0, 0.8)',
   linearGradientBlack09: 'rgba(0, 0, 0, 0.9)',
   linearGradientTransparent: 'transparent',
 };

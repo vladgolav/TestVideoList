@@ -5,14 +5,14 @@ import { colors } from "src/constants/colors";
 
 export default StyleSheet.create({
   container: {
-    position: 'absolute',
-    zIndex: 999,
-    top: moderateScale(16),
     left: moderateScale(16),
+    position: 'absolute',
+    top: moderateScale(16),
+    zIndex: 999,
   },
   icon: {
-    width: moderateScale(30),
     height: moderateScale(30),
     tintColor: colors.white,
+    width: moderateScale(30),
   },
 });

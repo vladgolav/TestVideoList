@@ -1,0 +1,1 @@
+export const viewabilityConfig = { viewAreaCoveragePercentThreshold: 50 };

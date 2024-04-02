@@ -1,5 +1,10 @@
 import React, { Ref, RefObject, forwardRef } from 'react';
-import { View, Text, ScrollView, FlatList, ViewabilityConfigCallbackPairs, Platform } from 'react-native';
+import {
+  View,
+  FlatList,
+  ViewabilityConfigCallbackPairs,
+  Platform,
+} from 'react-native';
 
 import { IEpisode } from 'src/interfaces/store/homeStore.interface';
 import EpisodeItem from 'src/components/EpisodeItem';
@@ -16,7 +21,7 @@ interface IEpisodesScreen {
   height: number;
   inititalScrollIndex: number;
   scrollToIndexCondition: boolean;
-};
+}
 
 const EpisodesScreen = ({
   episodes,
@@ -52,9 +57,11 @@ const EpisodesScreen = ({
           horizontal={false}
           showsVerticalScrollIndicator={false}
           viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current || undefined}
-          onScrollToIndexFailed={() => {}}
+          onScrollToIndexFailed={() => {
+            return;
+          }}
           getItemLayout={(data, index) => (
-            {length: height, offset: height * index, index}
+            { length: height, offset: height * index, index }
           )}
           {
             ...Platform.select({

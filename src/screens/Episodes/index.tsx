@@ -1,11 +1,13 @@
-import React, { useState, useRef, RefObject, useEffect } from 'react';
-import EpisodesScreen from './Episodes';
-import useCurrentVideoStore from 'src/store/currentVideo';
+import React, { useState, useRef } from 'react';
 import { FlatList } from 'react-native';
+
+import { viewabilityConfig } from 'src/constants/contants';
+import useCurrentVideoStore from 'src/store/currentVideo';
 import useHistoryStore from 'src/store/history';
+
 import { IVideo } from 'src/interfaces/store/homeStore.interface';
 
-const viewabilityConfig = { viewAreaCoveragePercentThreshold: 50 };
+import EpisodesScreen from './Episodes';
 
 const Episodes = () => {
   const flatlistRef = useRef<FlatList>(null);

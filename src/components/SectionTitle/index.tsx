@@ -5,7 +5,7 @@ import styles from './styles';
 
 interface ISectionTitle {
   title: string;
-};
+}
 
 const SectionTitle: React.FC<ISectionTitle> = ({ title }) => (
   <Text style={styles.titleText}>

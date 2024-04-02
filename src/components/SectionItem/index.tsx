@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, FlatList, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 import { ISection, IVideo } from 'src/interfaces/store/homeStore.interface';
 import SectionVideoItem from '../SectionVideoItem';
@@ -9,7 +9,7 @@ import SectionTitle from '../SectionTitle';
 
 interface ISectionItem {
   section: ISection;
-};
+}
 
 const SectionItem: React.FC<ISectionItem> = ({ section }) => {
   const renderSectionVideoItem = ({ item } : { item: IVideo }) => (

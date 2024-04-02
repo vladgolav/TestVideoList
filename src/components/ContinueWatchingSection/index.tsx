@@ -1,5 +1,4 @@
 import React from 'react';
-import { View } from 'react-native';
 
 import SectionTitle from '../SectionTitle';
 import ContinueWatchingItem from '../ContinueWatchingItem';
